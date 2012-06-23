@@ -14,4 +14,4 @@ LINK_DIRECTORIES( ${OSG_LIB_DIR} )
 SET( SRCS  isoshade.cpp )
 
 ADD_EXECUTABLE( isoshade ${SRCS} )
-TARGET_LINK_LIBRARIES( isoshade OpenThreads osg osgGA osgdb osgUtil osgViewer osgText osgManipulator )
+TARGET_LINK_LIBRARIES( isoshade OpenThreads osg osgGA osgDB osgUtil osgViewer osgText osgManipulator )

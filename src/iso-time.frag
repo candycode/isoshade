@@ -14,7 +14,7 @@ float ka = 0.01;
 float ks = 1.;
 float sh = 100.;
 vec3 refcolor = vec3( 1., 0.9, 0.8 );
-uniform int osg_FrameNumber;
+uniform unsigned int osg_FrameNumber;
 
 float ff = min( float( osg_FrameNumber ) / 240., 4. );
 
@@ -25,7 +25,7 @@ vec4 ComputeColor( vec3 n )
   float d = dot( N, -lightDir );
   float s = pow( max( 0.0, dot( vec3( 0, 0, 1 ), reflect( lightDir, N ) ) ), sh );
   float a = color.a * ( 1. - dot( vec3( 0., 0., 1 ), n ) );
-  float f = 1.0;//frac( 1. / ( float( osg_FrameNumber  + 1 ) ) );
+  float f = 1.0;//frac( 1. / ( float( osg_FrameNumber)  + 1.0 ) ) );
   vec3 c = vec3( abs( sin( f * PI * n.x ) ), abs( cos( f * PI * n.y ) ), abs( sin( f * PI * n.z + 0.25 * PI ) ) );  
   //return vec4(  ks * s * refcolor * color.rgb + kd * d * color.rgb + ka * color.rgb, 1. );
   return vec4(  ks * s * refcolor * c + kd * d * c + ka * c, 1. );

@@ -1,7 +1,7 @@
 echo off
 REM file containing function to render on command line
 SET PROGRAM_PATH=C:\cmakebuilds\isoshade\Release
-SET SHADERS_PATH=C:\projects\isoshade\trunk\src
+SET SHADERS_PATH=C:\projects\isoshade\src
 SET COLORMAP=%SHADERS_PATH%\colormaps\red_blue.txt
 SET MATERIAL=%SHADERS_PATH%\material_shaders\colormap.material.frag
 REM SET MATERIAL=%SHADERS_PATH%\material_shaders\phong_colormap.material.frag

@@ -1,8 +1,5 @@
 // Raytracing of iso-functions and volumetric data
 // Copyright (c) Ugo Varetto
-// WARNING: requires OSG to pass osg_Viewport uniform to shaders
-//          either modify OSG or add a pre draw camera callback
-//          to pass the uniform to the shaders
 
 #include <iostream>
 #include <string>
@@ -38,44 +35,44 @@
 
 osg::Program* CreatePassThroughProgram()
 {
-	static const char PASSTHROUGH_VERT[] =
-	"varying vec4 color;"
-	"void main(void)\n"
-	"{\n"
-	"  color = gl_FrontMaterial.diffuse;\n"
-	"  gl_Position = ftransform();\n"
-	"}\n";
+    static const char PASSTHROUGH_VERT[] =
+    "varying vec4 color;"
+    "void main(void)\n"
+    "{\n"
+    "  color = gl_FrontMaterial.diffuse;\n"
+    "  gl_Position = ftransform();\n"
+    "}\n";
 
-	static const char PASSTHROUGH_FRAG[] =
-	"varying vec4 color;"
-	"void main(void)\n"
-	"{\n"
-	"  gl_FragColor = color;\n"
-	"}\n";
+    static const char PASSTHROUGH_FRAG[] =
+    "varying vec4 color;"
+    "void main(void)\n"
+    "{\n"
+    "  gl_FragColor = color;\n"
+    "}\n";
 
 
-	osg::ref_ptr< osg::Program > p = new osg::Program;
+    osg::ref_ptr< osg::Program > p = new osg::Program;
     p->addShader( new osg::Shader( osg::Shader::FRAGMENT, PASSTHROUGH_FRAG ) );
-	p->addShader( new osg::Shader( osg::Shader::VERTEX,   PASSTHROUGH_VERT ) );
-	return p.release();
+    p->addShader( new osg::Shader( osg::Shader::VERTEX,   PASSTHROUGH_VERT ) );
+    return p.release();
 }
 
 
 osgManipulator::Dragger* CreateManipulator( osg::MatrixTransform* mt )
 {
-	if( !mt ) throw std::runtime_error( "NULL matrix transform" );
-	if( !mt ) return 0; // in case exceptions not enabled
-	osg::ref_ptr< osgManipulator::Dragger > dragger = new osgManipulator::TabBoxDragger;
-	const float scale = mt->getBound().radius() * 1.2f;
+    if( !mt ) throw std::runtime_error( "NULL matrix transform" );
+    if( !mt ) return 0; // in case exceptions not enabled
+    osg::ref_ptr< osgManipulator::Dragger > dragger = new osgManipulator::TabBoxDragger;
+    const float scale = mt->getBound().radius() * 1.2f;
     dragger->setMatrix( osg::Matrix::scale( scale, scale, scale ) *
                         osg::Matrix::translate( mt->getBound().center() ) );
     dragger->setHandleEvents( true );
     dragger->addTransformUpdating( mt );
-	dragger->setupDefaultGeometry();
+    dragger->setupDefaultGeometry();
 
-	
+    
     dragger->getOrCreateStateSet()->setAttributeAndModes( CreatePassThroughProgram(), osg::StateAttribute::OVERRIDE );
-	return dragger.release();
+    return dragger.release();
 }
 
 
@@ -87,7 +84,7 @@ int main( int argc, char **argv )
         // use an ArgumentParser object to manage the program arguments.
         osg::ArgumentParser arguments(&argc,argv);
         arguments.getApplicationUsage()->addCommandLineOption( "-vert",  "Vertex shader file" );
-	    arguments.getApplicationUsage()->addCommandLineOption( "-frag",  "Fragment shader file" );
+        arguments.getApplicationUsage()->addCommandLineOption( "-frag",  "Fragment shader file" );
         arguments.getApplicationUsage()->addCommandLineOption( "-bk", "Background color \"r g b\"" );
         arguments.getApplicationUsage()->addCommandLineOption( "-fun", "Shader implementing 'float isofun(vec3 pos)' function" );
         arguments.getApplicationUsage()->addCommandLineOption( "-boxSize", "\"x-size y-size z-size\"" );
@@ -167,21 +164,21 @@ int main( int argc, char **argv )
         // construct the viewer.
         osgViewer::Viewer viewer;
            
-		osg::ref_ptr< osg::Node > model = osgDB::readNodeFiles( arguments );
-		if( model == 0 ) 
-		{
-			osg::ref_ptr< osg::Geode > geode = new osg::Geode;
-			geode->addDrawable( new osg::ShapeDrawable( new osg::Box( osg::Vec3( 0.f, 0.f, 0.f ), boxSizeX, boxSizeY, boxSizeZ ) ) );
-			model = geode;
-			model->getOrCreateStateSet()->addUniform( new osg::Uniform( "halfBoxSize", osg::Vec3( .5f * boxSizeX, .5f * boxSizeY, .5f * boxSizeZ ) ) );
-			
-		}
-		else
-		{
-			const float scale = .5f * model->getBound().radius();
-			model->getOrCreateStateSet()->addUniform( new osg::Uniform( "halfBoxSize", osg::Vec3( .5f * scale, .5f * scale, .5f * scale ) ) );
-		}
-		osg::StateSet* set = model->getOrCreateStateSet();
+        osg::ref_ptr< osg::Node > model = osgDB::readNodeFiles( arguments );
+        if( model == 0 ) 
+        {
+            osg::ref_ptr< osg::Geode > geode = new osg::Geode;
+            geode->addDrawable( new osg::ShapeDrawable( new osg::Box( osg::Vec3( 0.f, 0.f, 0.f ), boxSizeX, boxSizeY, boxSizeZ ) ) );
+            model = geode;
+            model->getOrCreateStateSet()->addUniform( new osg::Uniform( "halfBoxSize", osg::Vec3( .5f * boxSizeX, .5f * boxSizeY, .5f * boxSizeZ ) ) );
+            
+        }
+        else
+        {
+            const float scale = .5f * model->getBound().radius();
+            model->getOrCreateStateSet()->addUniform( new osg::Uniform( "halfBoxSize", osg::Vec3( .5f * scale, .5f * scale, .5f * scale ) ) );
+        }
+        osg::StateSet* set = model->getOrCreateStateSet();
         osg::ref_ptr< osg::Program > aprogram;
         aprogram = new osg::Program;
         aprogram->setName( "iso" );
@@ -193,8 +190,8 @@ int main( int argc, char **argv )
         if( !matShader.empty() ) aprogram->addShader( osg::Shader::readShaderFile( osg::Shader::FRAGMENT, matShader ) );
         aprogram->addShader( osg::Shader::readShaderFile( osg::Shader::VERTEX, vertShader ) );
         set->setAttributeAndModes( aprogram.get(), osg::StateAttribute::ON );
-	    
-	    set->setMode( GL_BLEND, osg::StateAttribute::ON ); 
+        
+        set->setMode( GL_BLEND, osg::StateAttribute::ON ); 
         if( !cmapImage.empty() )
         {
             osg::ref_ptr< osg::Image > image = new osg::Image;
@@ -209,16 +206,16 @@ int main( int argc, char **argv )
         }
         viewer.getCamera()->setClearColor( osg::Vec4( bkR, bkG, bkB, 1.0f ) );
         // add matrix transform to allow for manipulator operations
-		
-		if( arguments.read( "-manip" ) )
-		{
-			osg::ref_ptr< osg::Group > root = new osg::Group;
-			osg::ref_ptr< osg::MatrixTransform > mt = new osg::MatrixTransform;
-			mt->addChild( osg::get_pointer( model ) );
-			root->addChild( osg::get_pointer( mt ) );
-			root->addChild( CreateManipulator( osg::get_pointer( mt ) ) );
-			viewer.setSceneData( osg::get_pointer( root ) );
-		}
+        
+        if( arguments.read( "-manip" ) )
+        {
+            osg::ref_ptr< osg::Group > root = new osg::Group;
+            osg::ref_ptr< osg::MatrixTransform > mt = new osg::MatrixTransform;
+            mt->addChild( osg::get_pointer( model ) );
+            root->addChild( osg::get_pointer( mt ) );
+            root->addChild( CreateManipulator( osg::get_pointer( mt ) ) );
+            viewer.setSceneData( osg::get_pointer( root ) );
+        }
         else if( arguments.read( "-drawbox" ) )
         {
             osg::ref_ptr< osg::Group > group = new osg::Group;
@@ -227,14 +224,14 @@ int main( int argc, char **argv )
             osg::ref_ptr< osg::PolygonMode > polyModeObj = new osg::PolygonMode;
             polyModeObj->setMode(  osg::PolygonMode::FRONT_AND_BACK, osg::PolygonMode::LINE );
             box->getOrCreateStateSet()->setAttributeAndModes( osg::get_pointer( polyModeObj ) );
-			box->getOrCreateStateSet()->setAttributeAndModes( CreatePassThroughProgram(), osg::StateAttribute::OVERRIDE );
+            box->getOrCreateStateSet()->setAttributeAndModes( CreatePassThroughProgram(), osg::StateAttribute::OVERRIDE );
             group->addChild( osg::get_pointer( box ) );
             group->addChild( osg::get_pointer( model ) );
             viewer.setSceneData( osg::get_pointer( group ) );
         }
-		else viewer.setSceneData( osg::get_pointer( model ) );
+        else viewer.setSceneData( osg::get_pointer( model ) );
         // add the stats handler
-		viewer.addEventHandler(new osgViewer::StatsHandler);    
+        viewer.addEventHandler(new osgViewer::StatsHandler);    
         return viewer.run();
     } catch( const std::exception& e )
     {
