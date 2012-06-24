@@ -1,0 +1,8 @@
+Simple examples of how to render 3D surfaces and volumes defined with
+implicit functions through GLSL.
+
+Functions(w/ optional gradients), materials and the actual rendering algorithm
+are split into different files loaded at run-time. If a gradient in symbolic form
+is not available an approximate gradient is computed using finite differences.
+
+Originally developed with versions of OpenGL < 3.x and tested on NVIDIA only.  
