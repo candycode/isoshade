@@ -1,4 +1,4 @@
-//Raytracing of functional representations, volume rendering version
+//Raytracing of functional representations, volume rendering version;
 //Copyright (c) Ugo Varetto
 
 #define AUTO_COMPUTE_DISTANCE //FASTER
@@ -132,7 +132,7 @@ void main(void)
 #endif
     gl_FragColor = ComputeColor( P.xyz, N, clamp( ( f - minIsoValue ) / dMaxMin, 0., 1. ), gl_FragColor );
 #ifndef BACK_TO_FRONT
-    if( gl_FragColor.a >= 1.0 ) break;
+    if( gl_FragColor.a >= 0.9 ) break;
 #endif
   }
 }
