@@ -1,0 +1,6 @@
+No function except for 'isofun1' and 'isofun2' has an implementation
+of the 'IsoGradient' function i.e. no explicit gradient in symbolic form
+is available.
+
+The *_vol functions are supposed to be rendered through the volume rendering
+fragment shaders.
