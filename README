@@ -5,4 +5,13 @@ Functions(w/ optional gradients), materials and the actual rendering algorithm
 are split into different files loaded at run-time. If a gradient in symbolic form
 is not available an approximate gradient is computed using finite differences.
 
-Originally developed with versions of OpenGL < 3.x and tested on NVIDIA only.  
+Originally developed with versions of OpenGL < 3.x and tested on NVIDIA only.
+
+Some FRAPS-captured animations:
+
+http://www.youtube.com/watch?v=S8sFeA0l--8&feature=plcp
+http://www.youtube.com/watch?v=s9b9YUnWefc&feature=plcp
+http://www.youtube.com/watch?v=UBRP9pQyWRk&feature=plcp
+http://www.youtube.com/watch?v=818AKL0f7dk&feature=plcp
+
+
