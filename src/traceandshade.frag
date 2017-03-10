@@ -34,10 +34,10 @@ void main(void)
   float tstart = length( raydir ) - 0.001;
   float tend = tstart + 6.0;
   float tstep = 0.05;
-  
-  
+
+
   vec3 rdir = transpose( gl_NormalMatrix ) * raydir;
-    
+
   vec3 dir = normalize( rdir );
   int numSteps = int( ( tend - tstart ) / tstep );
   vec3 prev = origin.xyz + tstart * dir;
@@ -45,22 +45,22 @@ void main(void)
   vec3 cur = prev;
   float tcur = tprev;
   float t = -1.0;
- 
+
   for( int i = 1; i < numSteps; ++i )
   {
     tcur = tstart + tstep * float( i );
     cur = origin.xyz + tcur * dir;
     float f1 = IsoFunction( prev );
-    float f2 = IsoFunction( cur ); 
+    float f2 = IsoFunction( cur );
     if( f1 * f2 < 0. )
     {
       cur = prev + ( 0. - f1 ) * ( cur - prev ) * (1./(f2 - f1 ));
       t = tcur;
-      break; 
+      break;
     }
     else if( abs( f2 ) < eps )
     {
-         
+
          t = length( cur - prev );
          break;
     }
@@ -73,14 +73,12 @@ void main(void)
     else prev = cur;
   }
   if( t < 0.0 ) discard;
- 
+
   vec4 P = gl_ModelViewMatrix * vec4( cur, 1. );
   P.xyzw /= P.w;
   vec3 N = gl_NormalMatrix * normalize( IsoGradient( cur ) );
-  gl_FragColor = ComputeColor( P.xyz, N );	  
+  gl_FragColor = ComputeColor( P.xyz, N );
   float z = dot( P, gl_ProjectionMatrixTranspose[ 2 ] );
   float w = dot( P, gl_ProjectionMatrixTranspose[ 3 ] );
   gl_FragDepth = 0.5 * ( z / w + 1.0 );
 }
-
-

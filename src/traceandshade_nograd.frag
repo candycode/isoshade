@@ -1,7 +1,7 @@
 //Raytracing of functional representations
 //Copyright (c) Ugo Varetto
 
-#version 130
+#version 120
 varying vec4 color;
 varying vec3 rayorigin;
 varying vec3 raydir;
@@ -15,7 +15,7 @@ float ks = 1.;
 float sh = 100.;
 vec3 refcolor = vec3( 1, 1, 1 );
 
-// declaration of isofun 
+// declaration of isofun
 float IsoFunction( in vec3 p );
 
 const float tstep = 0.05;
@@ -26,7 +26,7 @@ vec3 IsoGradient( in vec3 p )
     float dfdy = IsoFunction( p + vec3( 0., tstep, 0. ) ) - IsoFunction( p + vec3( 0., -tstep, 0. ) );
     float dfdx = IsoFunction( p + vec3( tstep, 0., 0. ) ) - IsoFunction( p + vec3( -tstep, 0., 0. ) );
     // no need to divide by 2 x tstep since it will be normalized
-    return vec3( dfdx, dfdy, dfdz ); 
+    return vec3( dfdx, dfdy, dfdz );
 }
 
 vec4 ComputeColor( vec3 P, vec3 n )
@@ -41,9 +41,9 @@ void main(void)
 {
   float tstart = length( raydir ) - 0.001;
   float tend = tstart + 6.0;
-   
+
   vec3 rdir = transpose( gl_NormalMatrix ) * raydir;
-    
+
   vec3 dir = normalize( rdir );
   int numSteps = int( ( tend - tstart ) / tstep );
   vec3 prev = origin.xyz + tstart * dir;
@@ -51,22 +51,22 @@ void main(void)
   vec3 cur = prev;
   float tcur = tprev;
   float t = -1.0;
- 
+
   for( int i = 1; i < numSteps; ++i )
   {
     tcur = tstart + tstep * float( i );
     cur = origin.xyz + tcur * dir;
     float f1 = IsoFunction( prev );
-    float f2 = IsoFunction( cur ); 
+    float f2 = IsoFunction( cur );
     if( f1 * f2 < 0. )
     {
       cur = prev + ( 0. - f1 ) * ( cur - prev ) * (1./(f2 - f1 ));
       t = tcur;
-      break; 
+      break;
     }
     else if( abs( f2 ) < eps )
     {
-         
+
          t = length( cur - prev );
          break;
     }
@@ -79,14 +79,12 @@ void main(void)
     else prev = cur;
   }
   if( t < 0.0 ) discard;
- 
+
   vec4 P = gl_ModelViewMatrix * vec4( cur, 1. );
   P.xyzw /= P.w;
   vec3 N = gl_NormalMatrix * normalize( IsoGradient( cur ) );
-  gl_FragColor = ComputeColor( P.xyz, N );	  
+  gl_FragColor = ComputeColor( P.xyz, N );
   float z = dot( P, gl_ProjectionMatrixTranspose[ 2 ] );
   float w = dot( P, gl_ProjectionMatrixTranspose[ 3 ] );
   gl_FragDepth = 0.5 * ( z / w + 1.0 );
 }
-
-

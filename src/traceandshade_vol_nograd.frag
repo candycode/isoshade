@@ -1,12 +1,12 @@
 //Raytracing of functional representations, volume rendering version;
 //Copyright (c) Ugo Varetto
-
+#version 120
 #define AUTO_COMPUTE_DISTANCE //FASTER
 #define BACK_TO_FRONT
 //#define COMPUTE_POINT_AND_NORMAL
 //#define GRADIENT_FILTER
 
-#version 130
+//#version 130
 uniform sampler1D colormap;
 uniform vec3 halfBoxSize;
 varying vec4 color;
@@ -16,7 +16,7 @@ varying vec3 center;
 varying vec4 origin;
 const float eps = 0.00001;
 
-// declaration of isofun and value getters 
+// declaration of isofun and value getters
 float IsoFunction( in vec3 p );
 float GetMinIsoValue();
 float GetMaxIsoValue();
@@ -40,7 +40,7 @@ vec3 IsoGradient( in vec3 p )
     float dfdz = IsoFunction( p + vec3( 0., 0., tstep ) ) - IsoFunction( p + vec3( 0., 0., -tstep ) );
     float dfdy = IsoFunction( p + vec3( 0., tstep, 0. ) ) - IsoFunction( p + vec3( 0., -tstep, 0. ) );
     float dfdx = IsoFunction( p + vec3( tstep, 0., 0. ) ) - IsoFunction( p + vec3( -tstep, 0., 0. ) );
-    return 0.5 * vec3( dfdx, dfdy, dfdz ) / tstep; 
+    return 0.5 * vec3( dfdx, dfdy, dfdz ) / tstep;
 }
 
 // compute next intersection with box;
@@ -80,7 +80,7 @@ float ComputeMaxDistance( vec3 dir, vec3 p )
       ip = p + dir * t;
       if( all( greaterThanEqual( ip.xy, -halfBoxSize.xy - bias ) ) &&
           all( lessThanEqual( ip.xy, halfBoxSize.xy +  bias ) ) ) return abs( t );
-    }    
+    }
     return 0.0;
 #endif
 }
@@ -106,11 +106,11 @@ void main(void)
   maxDistance = max( 0.0, ComputeMaxDistance( dir, origin.xyz + rdir + eps * dir ) );
   vec3 dstep = tstep * dir;
 #endif
-  if( maxDistance < eps ) discard; 
+  if( maxDistance < eps ) discard;
   //gl_FragColor = vec4( vec3( maxDistance ), 1. );
   //return;
   float tend = tstart + maxDistance;
-  int numSteps = max( 1, int( ( tend - tstart ) / tstep ) );
+  int numSteps = int(max( 1, int( ( tend - tstart ) / tstep ) ));
   vec4 P;
   vec3 N;
   // iterate back to front and accumulate color and transparency
@@ -136,5 +136,3 @@ void main(void)
 #endif
   }
 }
-
-
